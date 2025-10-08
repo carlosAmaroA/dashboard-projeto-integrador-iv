@@ -31,14 +31,13 @@ Desenvolver um **painel de controle completo** para análise de acidentes rodovi
    - python -m venv venv
    - venv\Scripts\activate
    - pip install -r requirements.txt
-   - pip install -e .
 
 #### MacOs/Linux
 
    - python -m venv venv
    - source venv/bin/activate
    - pip install -r requirements.txt
-   - pip install -e .
    
 
  **Observação:** Execute o codigo **a partir da raiz do projeto**, onde está localizado o arquivo `requirements.txt`
+
