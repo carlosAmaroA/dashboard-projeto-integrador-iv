@@ -21,3 +21,4 @@ for year in range(2017,2025):
 
 result = pd.concat(result)
 
+result.to_pickle(Path('data','agg_points.pkl'))
