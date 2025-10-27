@@ -3,7 +3,7 @@
 import pandas as pd
 from pathlib import Path
 import plotly.express as px
-import plotly.colors as pc
+import plotly.colors as pc  
 
 df = pd.read_pickle(Path('data', 'acidentes.pkl'))
 
@@ -102,13 +102,21 @@ mapa_legendas = {
     'velocidade incompativel': 'Velocidade incompativel',
 }
 
+def data_filter(year,state):
+    data = pd.read_pickle(Path('data','acidentes.pkl'))
+    data = data[data['data'].dt.year == year]
+    if state != 'all':
+        data = data[data['uf'] == state]
+    return data
 
-def bar_chart_causas(year):
+
+
+def bar_chart_causas(year,state):
     """
     Cria um gráfico de barras aprimorado com legendas corrigidas e layout automático.
     As cores dos números do gráfico se adaptam automaticamente à luminosidade da barra.
     """
-    df_filtered = df[df['data'].dt.year == year]
+    df_filtered = data_filter(year,state)
     causas_count = df_filtered['causa_acidente'].value_counts().nlargest(10).sort_values(ascending=True)
     y_labels_corrigidos = causas_count.index.map(lambda causa: mapa_legendas.get(causa, causa))
 
@@ -168,3 +176,43 @@ def bar_chart_causas(year):
 
     return fig
 
+
+def data_filter_2(year,state):
+    data = pd.read_pickle(Path('data','acidentes_full.pkl'))
+    data = data[data['data'].dt.year == year]
+    if state != 'all':
+        data = data[data['uf'] == state]
+    return data
+
+def treemap_vehicles(year,state):
+    data = data_filter_2(year,state)
+    data = data.explode('tipo_veiculo')
+    data = data.explode('causa_principal')
+    data['gravidade'] = data.apply(
+    lambda row: 'fatal' if row['mortos'] > 0 else ('grave' if row['feridos_graves'] > 0 else 'leve'),
+    axis=1)
+    data = data.groupby(['tipo_veiculo','gravidade','causa_principal'],as_index=False).count()[['tipo_veiculo','gravidade','causa_principal','br']]    
+    df = data
+    df['causa_principal'] = df['causa_principal'].str.capitalize()
+    df['gravidade'] = df['gravidade'].str.capitalize()
+    df['nivel'] = df['gravidade']+'-'+df['causa_principal']
+    df['nivel'] = df['nivel'].str.capitalize()
+    df['tipo_veiculo'] = df['tipo_veiculo'].str.capitalize()
+
+
+    fig = px.treemap(
+        df,
+        path=['tipo_veiculo', 'gravidade','causa_principal'],  
+        values='br',                  
+        title='Acidentes por Tipo de Veículo e Gravidade',
+        color_discrete_sequence=px.colors.qualitative.Set3
+    )
+
+    fig.update_layout(
+        paper_bgcolor='#060606',
+        font = dict(
+            color='white'
+        )
+    )
+
+    return fig

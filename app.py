@@ -1,6 +1,6 @@
 from dash import Dash, dcc, html
 import pandas as pd
-from tabs import overview, temporal, geographic, general, datainfo, causas, pattern # <-- Adicionado 'causas'
+from tabs import overview, temporal, geographic, general, datainfo, causas # <-- Adicionado 'causas'
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output
 
@@ -14,9 +14,7 @@ from components.geographic.graphs import *
 from components.geographic.callbacks import *
 
 # Importe os novos componentes da aba de causas
-from components.causas.graphs import bar_chart_causas
-
-from components.types.graphs import treemap_vehicles
+from components.causas.graphs import bar_chart_causas,treemap_vehicles
 
 app = Dash(__name__, external_stylesheets=[dbc.themes.CYBORG], suppress_callback_exceptions=True)
 
@@ -25,14 +23,18 @@ app.layout = \
 dbc.Container([
     html.Div([
         dbc.Tabs([
-            dbc.Tab(label='Overview', tab_id='overview'),
-            dbc.Tab(label='Temporal', tab_id='temporal'),
-            dbc.Tab(label='Geographic', tab_id='geographic'),
-            dbc.Tab(label='Causes & Factors', tab_id='causas'),  # <-- NOVA ABA ADICIONADA
-            dbc.Tab(label='Vehicles & Others', tab_id='pattern'),
-            dbc.Tab(label='Dataset Info', tab_id='info'),
-        ], id='tabs', active_tab='overview')
-    ], className="mx-auto", style={"maxWidth": "1200px"}),
+            dbc.Tab(label='Visão Geral', tab_id='overview'),
+            dbc.Tab(label='Visão Temporal', tab_id='temporal'),
+            dbc.Tab(label='Visão Geográfica', tab_id='geographic'),
+            dbc.Tab(label='Causas e Fatores', tab_id='causas'),
+            dbc.Tab(label='Sobre os Dados', tab_id='info'),
+        ], id='tabs', active_tab='overview',
+        style={
+            'display': 'flex',
+            'justifyContent': 'center' 
+        },)
+    ], className="mx-auto", style={"maxWidth": "1200px"},
+    ),
     html.Div(id='tab-content', className='mt-4')
 ], fluid=True)
 
@@ -49,8 +51,6 @@ def render_tab(active_tab):
         return causas.layout
     elif active_tab == 'type':
         return general.layout
-    elif active_tab == 'pattern':
-        return pattern.layout
     elif active_tab == 'info':
         return datainfo.layout
 
@@ -149,20 +149,20 @@ def state_map_callback(year,state,maptype):
 # --- CALLBACK DA NOVA ABA DE CAUSAS ---
 @app.callback(
     Output('causas-bar-chart', 'figure'),
-    Input('causas-select-year', 'value')
+    Input('types-year-dropdown', 'value'),
+    Input('types-state-dropdown', 'value')
 )
-def update_causas_chart(year):
-    return bar_chart_causas(int(year))
+def update_causas_chart(year,state):
+    return bar_chart_causas(int(year),state)
 
-# --- CALLBACK ABA VEHICLES
 @app.callback(
     Output('treemap-vehicles', 'figure'),
     Input('types-year-dropdown', 'value'),
     Input('types-state-dropdown', 'value')
 )
-def update_treemap_vehicles(year,state):
-    print('updating treemap')
+def update_causas_chart(year,state):
     return treemap_vehicles(int(year),state)
 
+
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=8050,debug=True)
+    app.run(host="0.0.0.0", port=8050)

@@ -80,7 +80,7 @@ def state_map(year,state,maptype):
             data, 
             lat='latitude',
             lon='longitude',
-            radius=4, 
+            radius=2, 
             center=coords[state][1],
             zoom=coords[state][0],
             mapbox_style="carto-darkmatter",

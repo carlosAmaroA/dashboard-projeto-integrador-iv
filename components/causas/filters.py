@@ -1,21 +1,68 @@
-from dash import dcc, html
-import dash_bootstrap_components as dbc
+import dash_bootstrap_components as dbc 
+from dash import html,dcc
 
-# Lista de anos para o filtro
-anos = list(range(2017, 2025))
-
-# Cria o card de filtros
-filters = dbc.Card(
+year_picker = \
+dbc.Card(
     dbc.CardBody([
-        html.H5("Filtros", className="card-title"),
-        html.Hr(),
-        html.P("Selecione o Ano:", className="card-text"),
+        html.Label('Escolha o Ano'),
         dcc.Dropdown(
-            id='causas-select-year',
-            options=[{'label': ano, 'value': ano} for ano in anos],
-            value=2024, # Ano padrão
-            clearable=False
-        ),
-    ]),
-    className="mt-3"
+            id='types-year-dropdown',
+            options=[{'label':str(x),'value':str(x)} for x in range(2017,2025)],
+            value='2017',
+            clearable=False,
+        )
+    ])
+,style={'border':'none'})
+
+
+state_picker = \
+dbc.Card(
+    dbc.CardBody([
+        html.Label('Escolha Estado'),
+        dcc.Dropdown(
+            id='types-state-dropdown',
+            options=[
+                {'label':'Todos','value':'all'},
+                {'label': 'Acre', 'value': 'AC'},
+                {'label': 'Alagoas', 'value': 'AL'},
+                {'label': 'Amapá', 'value': 'AP'},
+                {'label': 'Amazonas', 'value': 'AM'},
+                {'label': 'Bahia', 'value': 'BA'},
+                {'label': 'Ceará', 'value': 'CE'},
+                {'label': 'Distrito Federal', 'value': 'DF'},
+                {'label': 'Espírito Santo', 'value': 'ES'},
+                {'label': 'Goiás', 'value': 'GO'},
+                {'label': 'Maranhão', 'value': 'MA'},
+                {'label': 'Mato Grosso', 'value': 'MT'},
+                {'label': 'Mato Grosso do Sul', 'value': 'MS'},
+                {'label': 'Minas Gerais', 'value': 'MG'},
+                {'label': 'Pará', 'value': 'PA'},
+                {'label': 'Paraíba', 'value': 'PB'},
+                {'label': 'Paraná', 'value': 'PR'},
+                {'label': 'Pernambuco', 'value': 'PE'},
+                {'label': 'Piauí', 'value': 'PI'},
+                {'label': 'Rio de Janeiro', 'value': 'RJ'},
+                {'label': 'Rio Grande do Norte', 'value': 'RN'},
+                {'label': 'Rio Grande do Sul', 'value': 'RS'},
+                {'label': 'Rondônia', 'value': 'RO'},
+                {'label': 'Roraima', 'value': 'RR'},
+                {'label': 'Santa Catarina', 'value': 'SC'},
+                {'label': 'São Paulo', 'value': 'SP'},
+                {'label': 'Sergipe', 'value': 'SE'},
+                {'label': 'Tocantins', 'value': 'TO'}
+            ],
+            value='all'
+            
+        )
+    ])
+,style={'border':'none'})
+
+
+filters = \
+dbc.Card(
+    dbc.CardBody([
+        html.H2('Filtros'),
+        year_picker,
+        state_picker,
+    ])
 )

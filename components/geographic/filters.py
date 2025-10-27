@@ -64,8 +64,8 @@ dbc.Card(
         dcc.Dropdown(
             id='geo-map-dropdown',
             options=[
-                {'label':'choropleth','value':'choropleth'},
-                {'label':'heatmap','value':'heatmap'},
+                {'label':'Mapa Coroplético','value':'choropleth'},
+                {'label':'Mapa de Densidade','value':'heatmap'},
             ],
             value='choropleth',
             clearable=False
